@@ -1,37 +1,71 @@
 const { GraphQLServer } = require('graphql-yoga');
-const feedResolver = require('./resolvers/feed');
 
-// Defining GraphQL schema
-const typeDefs = `
-  type Query {
-    info: String!
-    feed: [Link!]!
-  }
-
-  type Link {
-    id: ID!
-    description: String!
-    url: String!
-  }
-`;
+// Temporary, using until implementing
+// persistent storage
+const links = [{
+  id: 'link-1',
+  url: 'www.howtographql.com',
+  description: 'Fullstack tutorial for GraphQL',
+}];
 
 // The actual implementation of the GraphQL schema
 const resolvers = {
   Query: {
     info: () => 'This is the GraphQL API',
-    feed: feedResolver,
+    feed: () => links,
+    link: (root, args) => {
+      const link = links
+        .find((item) => item.id === args.id);
+      if (link) return link;
+      return null;
+    },
   },
-  Link: {
-    id: (root) => root.id,
-    description: (root) => root.description,
-    url: (root) => root.url,
+
+  Mutation: {
+    postLink: (root, args) => {
+      const link = {
+        id: `link-${links.length + 1}`,
+        description: args.description,
+        url: args.url,
+      };
+      links.push(link);
+      return link;
+    },
+
+    updateLink: (root, args) => {
+      const linkIndex = links
+        .findIndex((item) => item.id === args.id);
+      if (linkIndex !== -1) {
+        const link = { ...links[linkIndex] };
+        if (args.url) {
+          link.url = args.url;
+        }
+        if (args.description) {
+          link.description = args.description;
+        }
+        links.splice(linkIndex, 1, link);
+        return link;
+      }
+      return null;
+    },
+
+    deleteLink: (root, args) => {
+      const linkIndex = links
+        .findIndex((item) => item.id === args.id);
+      if (linkIndex !== -1) {
+        const link = { ...links[linkIndex] };
+        links.splice(linkIndex, 1);
+        return link;
+      }
+      return null;
+    },
   },
 };
 
 // Passing our definitions and resolvers
 // into the actual graphql-yoga server
 const server = new GraphQLServer({
-  typeDefs,
+  typeDefs: './src/schema.graphql',
   resolvers,
 });
 
