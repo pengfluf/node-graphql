@@ -1,9 +1,17 @@
 const { GraphQLServer } = require('graphql-yoga');
+const feedResolver = require('./resolvers/feed');
 
 // Defining GraphQL schema
 const typeDefs = `
   type Query {
     info: String!
+    feed: [Link!]!
+  }
+
+  type Link {
+    id: ID!
+    description: String!
+    url: String!
   }
 `;
 
@@ -11,6 +19,12 @@ const typeDefs = `
 const resolvers = {
   Query: {
     info: () => 'This is the GraphQL API',
+    feed: feedResolver,
+  },
+  Link: {
+    id: (root) => root.id,
+    description: (root) => root.description,
+    url: (root) => root.url,
   },
 };
 
