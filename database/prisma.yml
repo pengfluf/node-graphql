@@ -7,3 +7,7 @@ datamodel: datamodel.graphql
 
 # Secret key, e.g. for the JWT token operation
 secret: mysecret123
+
+hooks:
+  post-deploy:
+    - graphql get-schema --project database
