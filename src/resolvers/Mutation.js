@@ -56,7 +56,7 @@ async function signup(root, args, context) {
   };
 }
 
-async function login(root, args, context, info) {
+async function login(root, args, context) {
   // Get user info
   const user = await context.db.query.user({
     where: {
@@ -83,10 +83,45 @@ async function login(root, args, context, info) {
   };
 }
 
+async function vote(root, args, context, info) {
+  const userID = getUserID(context);
+
+  const link = await context.db.exists.Vote({
+    user: {
+      id: userID,
+    },
+    link: {
+      id: args.linkID,
+    },
+  });
+  if (link) {
+    throw new Error(`Already voted for the link with ID ${args.linkID} `);
+  }
+
+  return context.db.mutation.createVote(
+    {
+      data: {
+        user: {
+          connect: {
+            id: userID,
+          },
+        },
+        link: {
+          connect: {
+            id: args.linkID,
+          },
+        },
+      },
+    },
+    info
+  );
+}
+
 module.exports = {
   postLink,
   updateLink,
   deleteLink,
   signup,
   login,
+  vote,
 };
