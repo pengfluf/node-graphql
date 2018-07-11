@@ -1,57 +1,15 @@
 const { GraphQLServer } = require('graphql-yoga');
 const { Prisma } = require('prisma-binding');
 
+const Query = require('./resolvers/Query');
+const Mutation = require('./resolvers/Mutation');
+const AuthPayload = require('./resolvers/AuthPayload');
+
 // The actual implementation of the GraphQL schema
 const resolvers = {
-  Query: {
-    info: () => 'This is the GraphQL API',
-
-    feed: (root, args, context, info) => context.db.query.links({}, info),
-
-    link: (root, args) => {
-      const link = links
-        .find((item) => item.id === args.id);
-      if (link) return link;
-      return null;
-    },
-  },
-
-  Mutation: {
-    postLink: (root, args, context, info) => context.db.mutation.createLink({
-      data: {
-        url: args.url,
-        description: args.description,
-      },
-    }, info),
-
-    // updateLink: (root, args) => {
-    //   const linkIndex = links
-    //     .findIndex((item) => item.id === args.id);
-    //   if (linkIndex !== -1) {
-    //     const link = { ...links[linkIndex] };
-    //     if (args.url) {
-    //       link.url = args.url;
-    //     }
-    //     if (args.description) {
-    //       link.description = args.description;
-    //     }
-    //     links.splice(linkIndex, 1, link);
-    //     return link;
-    //   }
-    //   return null;
-    // },
-    //
-    // deleteLink: (root, args) => {
-    //   const linkIndex = links
-    //     .findIndex((item) => item.id === args.id);
-    //   if (linkIndex !== -1) {
-    //     const link = { ...links[linkIndex] };
-    //     links.splice(linkIndex, 1);
-    //     return link;
-    //   }
-    //   return null;
-    // },
-  },
+  Query,
+  Mutation,
+  AuthPayload,
 };
 
 // Passing our definitions and resolvers

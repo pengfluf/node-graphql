@@ -5,9 +5,6 @@ endpoint: https://eu1.prisma.sh/john-doe-507d96/node-graphql/dev
 # A path to the data model
 datamodel: datamodel.graphql
 
-# Secret key, e.g. for the JWT token operation
-secret: mysecret123
-
 hooks:
   post-deploy:
     - graphql get-schema --project database
