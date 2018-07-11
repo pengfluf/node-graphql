@@ -3,15 +3,17 @@ const { Prisma } = require('prisma-binding');
 
 const Query = require('./resolvers/Query');
 const Mutation = require('./resolvers/Mutation');
-const AuthPayload = require('./resolvers/AuthPayload');
 const Subscription = require('./resolvers/Subscription');
+const AuthPayload = require('./resolvers/AuthPayload');
+const Feed = require('./resolvers/Feed');
 
 // The actual implementation of the GraphQL schema
 const resolvers = {
   Query,
   Mutation,
-  AuthPayload,
   Subscription,
+  AuthPayload,
+  Feed,
 };
 
 // Passing our definitions and resolvers
